@@ -1,6 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework import viewsets
 
 from profiles_api import serializer
 
@@ -31,17 +32,32 @@ class HelloApiView(APIView):
         else:
             return Response(
                 serializer.errors,
-                status = status.HTTP_400_BAD_REQUEST,
-                )
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
     def put(self, request, pk=None):
         """Handle updating an object"""
-        return Response({'method':'PUT'})
+        return Response({'method': 'PUT'})
 
     def patch(self, request, pk=None):
         """Handle Partial update of an object"""
-        return Response({'method':'PATCH'})
+        return Response({'method': 'PATCH'})
 
     def delete(self, request, pk=None):
         """Delete an object"""
-        return Response({'method':'DELETE'})
+        return Response({'method': 'DELETE'})
+
+
+class HelloViewSet(viewsets.ViewSet):
+    """Test Api Viewset"""
+
+    def list(self, request):
+        """Return a hello message"""
+
+        a_viewset = [
+            'Uses actions(list, create retrive, update, partial_update)',
+            'Automatically maps to URLs using Routers',
+            'Provides more functionalit with less code',
+        ]
+
+        return Response({'message': 'Hello!', 'a_viewset': a_viewset})
