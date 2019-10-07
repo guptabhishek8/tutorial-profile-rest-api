@@ -2,8 +2,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import viewsets
+from rest_framework.authentication import TokenAuthentication
 
 from profiles_api import serializer
+from profiles_api import models
+from profiles_api import permissions
 
 
 class HelloApiView(APIView):
@@ -52,7 +55,6 @@ class HelloViewSet(viewsets.ViewSet):
     """Test Api Viewset"""
     serializer_class = serializer.HelloSerializer
 
-
     def list(self, request):
         """Return a hello message"""
 
@@ -75,7 +77,7 @@ class HelloViewSet(viewsets.ViewSet):
         else:
             return Response(
                 serializer.errors,
-                status = status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_400_BAD_REQUEST
             )
 
     def retrieve(self, request, pk=None):
@@ -87,9 +89,18 @@ class HelloViewSet(viewsets.ViewSet):
         return Response({'http_method': 'PUT'})
 
     def partial_update(self, request, pk=None):
-        """Handle updationg part of an object"""
+        """Handle updating part of an object"""
         return Response({'http_method': 'PATCH'})
 
     def destroy(self, request, pk=None):
         """Handle removing an object"""
         return Response({'Http_method': 'DELETE'})
+
+
+class UserProfileViewSet(viewsets.ModelViewSet):
+    """Handle creating and updating profile"""
+    serializer_class = serializer.UserProfileSerializer
+    queryset = models.UserProfile.objects.all()
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (permissions.UpdateOwnProfile,)
+
